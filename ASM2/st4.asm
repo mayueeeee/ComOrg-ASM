@@ -53,7 +53,7 @@ changeDirection:
 
     decRow:
         dec col
-        cmp col ,0
+        cmp col ,-1
         je endNaJa
         mov dir,-1
         jmp drawLine
