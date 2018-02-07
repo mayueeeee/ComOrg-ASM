@@ -36,7 +36,7 @@ drawLine:
         add al,bl
         mov row,al
         ; Check line is blank. If blank,increse column
-        cmp row, -1 
+        cmp row, -2 
         je incRow
         ; Check line is full. If full,decrese column back
         cmp row ,26 
