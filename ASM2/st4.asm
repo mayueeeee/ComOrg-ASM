@@ -62,7 +62,7 @@ print:
     printChar:
         mov     ah, 09h         ; write character at cursor position.
         mov     al, 'O'         ; O Char
-        mov     bl, 07h         ; set color to light gray
+        mov     bl, 09h         ; set color to light blue
         mov     cx, 1h          ; write 1 character
         int     10h
     ; jmp changeDirection    
