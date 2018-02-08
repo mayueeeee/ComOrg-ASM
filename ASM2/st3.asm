@@ -80,11 +80,11 @@ print:
 
 endNaJa:
     ;  clear screen
-    ; mov   ah, 6h
-    ; mov   al, 0h       ; clear whole screen
-    ; mov   bh, 7h
-    ; mov   cx, 0h
-    ; mov   dx, 184fh
-    ; int   10h
+    mov   ah, 6h
+    mov   al, 0h       ; clear whole screen
+    mov   bh, 7h
+    mov   cx, 0h
+    mov   dx, 184fh
+    int   10h
     ret
     end     main
