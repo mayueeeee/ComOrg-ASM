@@ -72,6 +72,10 @@ print:
         mov dl, col
         mov ah, 2
         int 10h 
+    hideCursor:
+        mov     ch, 32
+        mov     ah, 1
+        int     10h
     jmp drawLine
 
 endNaJa:
