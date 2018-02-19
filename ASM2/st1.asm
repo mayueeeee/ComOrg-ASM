@@ -45,17 +45,19 @@ drawLine:
 
 changeDirection:
     incCol:
+        mov dir,1
         inc row ;Add row
         cmp row ,26
         je endNaJa
-        mov dir,1
+        
         jmp drawLine
 
     decCol:
+        mov dir,-1
         inc row ;Add row
         cmp row ,26
         je endNaJa
-        mov dir,-1
+        
         jmp drawLine
 
 print:
