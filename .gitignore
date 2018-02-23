@@ -2,3 +2,9 @@
 *.COM
 *.MAP
 *.EXE
+
+#EMU8086 temp
+*.debug
+*.list
+*.symbol
+*.~asm
