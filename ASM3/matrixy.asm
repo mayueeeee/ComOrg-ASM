@@ -124,12 +124,40 @@ printChar:
     jg    nextLine     ; if over line, go to next line
     jmp    setPos    ; if not, jump to set pos & print again!
 
+randNewChar:      
+    ; push some register to stack to prevent boom!
+    push  ax
+    push  dx
+    mov   dl, 32
+    mov   al, randCh    ;Use prev char as seed
+    mul   dl            
+    add   ax, 4
+    mov   dl, 93        ; divider by 93 (126-33)
+    div   dl            
+    mov   randCh, ah    ; set reminder as char
+    add   randCh, 33    ; Start at 33 (random start from 0)
+    pop   dx
+    pop   ax
+    ret
+     
 nextLine:
     mov   dl, 0     ; Start col at 0
     cmp   dh, 24    
     jg   reset      ; if row is 25, reset it! (Over screen)
     inc   dh        ; if not, increse row
     jmp   setPos    ; Jump to set pos & print again!
+
+isInRandRange:
+    inc   colPos[si]      ; increase Pos
+    cmp   colPos[si], 45   ; to prevent out of random range (cause screen like old TV with no signal)
+    jl    isInScreen      ; if less, check is in screen
+    mov   colPos[si], 0   ; else reset it to 0
+
+isInScreen:
+    inc   si            ; inc index
+    cmp  si, 80        
+    je   printChar      ; if index === 80, Screen is full, Restart
+    jne  isInRandRange  ; else inc pos and check range        
 
 reset:
     ; delay before reset to reduce matrix speed
@@ -145,35 +173,7 @@ reset:
     ; int   10h
     ; reset index value
     mov   si, 0 
-
-inRandRange:
-    inc   colPos[si]      ; increase Pos
-    cmp   colPos[si], 45   ; to prevent out of random range (cause screen like old TV with no signal)
-    jl    isInScreen      ; if less, check is in screen
-    mov   colPos[si], 0   ; else reset it to 0
-
-isInScreen:
-    inc   si            ; inc index
-    cmp  si, 80        
-    je   printChar      ; if index === 80, Screen is full, Restart
-    jne  inRandRange  ; else inc pos and check range        
-
-randNewChar:  
-    
-    ; push some register to stack to prevent boom!
-    push  ax
-    push  dx
-    mov   dl, 32
-    mov   al, randCh    ;Use prev char as seed
-    mul   dl            
-    add   ax, 4
-    mov   dl, 93        ; divider by 93 (126-33)
-    div   dl            
-    mov   randCh, ah    ; set reminder as char
-    add   randCh, 33    ; Start at 33 (random start from 0)
-    pop   dx
-    pop   ax
-    ret
+    jmp isInRandRange
 
 endNaJa:
     ;  clear screen
