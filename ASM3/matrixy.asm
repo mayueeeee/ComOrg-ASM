@@ -3,7 +3,7 @@
          
 .data
     randCh    db  0         ; for store random char
-    colPos    db  80 dup(0) ; array for store head position
+    colPos    db  80 dup(0) ; array for store head positions
     seed      db  ?         ; seed variable
           
 .code
@@ -26,7 +26,7 @@ initHead:
     mov   colPos[si], dl          
     ; Random using Linear Congruence Generator (LCG) method
     ; seed = (7 * seed + 11) % 45
-    ; don't use 25. it's not pretty!
+    ; max y=45 for beatiful when passing the screen
     mov   dl, 7   
     mov   al, seed
     mul   dl          
@@ -41,9 +41,9 @@ initHead:
     jge   initHead
 
 initDisplay:
-    mov     ah, 00h         ; set video mode
-    mov     al, 03h         ; set to 80x25
-    int     10h
+    mov   ah, 00h         ; set video mode
+    mov   al, 03h         ; set to 80x25
+    int   10h
 
     mov   bh, 0h
     mov   dh, 0h  ; set row to 0
@@ -70,7 +70,7 @@ selectColor:
     jc    setWhite
     jz    setWhite
     ; Light Green - far from head 4 char
-    cmp   bl, 4
+    cmp   bl, 3
     jz    setLightGreen
     jc    setLightGreen
     ; Green - far from head 8 char
@@ -90,7 +90,7 @@ setBlack:
     jmp   printChar
 
 setWhite:
-    mov   bl, 0fh
+    mov   bl, 07h
     jmp   printChar
 
 setGray:
@@ -106,6 +106,13 @@ setLightGreen:
     jmp   printChar
 
 printChar:
+    ; delay:
+    ;     push  dx ; To prevent duplicate dx register value        
+    ;     mov   ah, 86h
+    ;     mov   cx, 0000h ;start
+    ;     mov   dx, 3A98h ;stop
+    ;     int   15h        
+    ;     pop   dx      ;  pop position back  
     ; print random character
     mov   ah, 09h 
     mov   cx, 1
@@ -125,14 +132,16 @@ nextLine:
     jmp   setPos    ; Jump to set pos & print again!
 
 reset:
-    push  dx ; To prevent duplicate dx register value
+    ; delay before reset to reduce matrix speed
     delay:
+        push  dx ; To prevent duplicate dx register value        
         mov   ah, 86h
         mov   cx, 0000h ;start
         mov   dx, 3A98h ;stop
-        int   15h      
-    pop   dx      ;  pop position back
-    mov   dh, 0h  ; set row to row index 0
+        int   15h        
+        pop   dx      ;  pop position back
+
+    mov   dh, 0  ; set row to row index 0
     ; int   10h
     ; reset index value
     mov   si, 0 
@@ -150,6 +159,7 @@ isInScreen:
     jne  inRandRange  ; else inc pos and check range        
 
 randNewChar:  
+    
     ; push some register to stack to prevent boom!
     push  ax
     push  dx
